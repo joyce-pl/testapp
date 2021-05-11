@@ -2,10 +2,38 @@ const button = document.getElementById('add');
 const list = document.getElementById('list');
 const textArea = document.getElementById('new-task');
 
-function generateId() {
-  const id = new Date();
-  return id.getTime();
+generateId = () => {
+  return Date.now();
 }
+
+changeTaskState = (e) => {
+  if(e.target.tagName === "LI") {
+    const taskId = e.target.getAttribute('data-id');
+    const task = todo.find(x => x.id == taskId);
+    if(task.checked === false) {
+      task.checked = true;
+      e.target.querySelector('input').checked = true;
+      e.target.classList.add('done');  
+    } else {
+      task.checked = false;
+      e.target.querySelector('input').checked = false;
+      e.target.classList.remove('done');
+    }
+  }
+  if(e.target.tagName === "INPUT") {
+    const taskId = e.target.parentElement.getAttribute('data-id');
+    const task = todo.find(x => x.id == taskId);
+    if(task.checked === false) {
+      task.checked = true;
+      e.target.checked = true;
+      e.target.parentElement.classList.add('done');
+    } else {
+      task.checked = false;
+      e.target.checked = false;
+      e.target.parentElement.classList.remove('done');
+    }
+  }
+};
 
 const todo = [{id: 1, name: "to do #1", checked: false}, 
              {id: 2, name: "to do #2", checked: false}, 
@@ -23,7 +51,7 @@ const createLiElement = (newElement) => {
 }
 
 const displayToDoList = () => {
-  todo.forEach(function(element) {
+  todo.forEach(element => {
     createLiElement(element);
   });
 }
@@ -40,37 +68,9 @@ const addElementToList = () => {
 }
 
 button.addEventListener("click", () => addElementToList());
-textArea.addEventListener('keydown', function() {
-   if (event.keyCode === 13) { 
+textArea.addEventListener('keydown', (event) => {
+   if (event.key === 'Enter') { 
     addElementToList();
   }
 });
 
-function changeTaskState(e) {
-  if(e.target.tagName === "LI") {
-    const taskId = e.target.getAttribute('data-id');
-    const task = todo.find(x => x.id == taskId);
-    if(task.checked === false) {
-      task.checked = true;
-      e.target.querySelector('input').setAttribute('checked', true);
-      e.target.classList.add('done');  
-    } else {
-      task.checked = false;
-      e.target.querySelector('input').removeAttribute('checked');
-      e.target.classList.remove('done');
-    }
-  }
-  if(e.target.tagName === "INPUT") {
-    const taskId = e.target.parentElement.getAttribute('data-id');
-    const task = todo.find(x => x.id == taskId);
-    if(task.checked === false) {
-      task.checked = true;
-      e.target.setAttribute('checked', true);
-      e.target.parentElement.classList.add('done');
-    } else {
-      task.checked = false;
-      e.target.removeAttribute('checked');
-      e.target.parentElement.classList.remove('done');
-    }
-  }
-};
