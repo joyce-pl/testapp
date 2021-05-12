@@ -1,6 +1,7 @@
 const button = document.getElementById('add');
 const list = document.getElementById('list');
 const textArea = document.getElementById('new-task');
+const todo = [];
 
 generateId = () => {
   return Date.now();
@@ -33,11 +34,8 @@ changeTaskState = (e) => {
       e.target.parentElement.classList.remove('done');
     }
   }
+  localStorage.setItem('items', JSON.stringify(todo));
 };
-
-const todo = [{id: 1, name: "to do #1", checked: false}, 
-             {id: 2, name: "to do #2", checked: false}, 
-             {id: 3, name: "to do #3", checked: false}];
 
 const createLiElement = (newElement) => {
   const li = document.createElement("li");
@@ -55,7 +53,15 @@ const displayToDoList = () => {
     createLiElement(element);
   });
 }
-displayToDoList();
+
+restoreFromLocalStorage = () => {
+  const lsItems = JSON.parse(localStorage.getItem('items'));
+  if(lsItems) {
+    lsItems.forEach(item => todo.push(item));
+  }
+  displayToDoList();
+}
+restoreFromLocalStorage();
 
 const addElementToList = () => {
   const text = textArea.value.trim();
@@ -63,6 +69,7 @@ const addElementToList = () => {
     const newElement = {id: generateId(), name: text, checked: false};
     createLiElement(newElement);
     todo.push(newElement);
+    localStorage.setItem('items', JSON.stringify(todo));
   }
   textArea.value = "";
 }
@@ -73,4 +80,3 @@ textArea.addEventListener('keydown', (event) => {
     addElementToList();
   }
 });
-
